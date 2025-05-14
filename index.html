@@ -1,89 +1,116 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Daulet Yermekbay | Portfolio</title>
-    <style>
-        body { font-family: Arial, sans-serif; transition: background 0.3s, color 0.3s; }
-        .dark-mode { background: #121212; color: white; }
-        .container { max-width: 800px; margin: auto; padding: 20px; }
-        .toggle-btn { padding: 10px; cursor: pointer; border: none; background: #007bff; color: white; }
-        .lang-select { margin-top: 10px; }
-    </style>
+  <meta charset="UTF-8">
+  <title>Word Highlighter</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background-color: #f2f2f2;
+      margin: 0;
+    }
+    .container {
+      background-color: #ffffff;
+      border-radius: 8px;
+      padding: 20px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      width: 500px;
+    }
+    #output {
+      margin-top: 20px;
+      white-space: pre-wrap;
+      background-color: #f9f9f9;
+      padding: 10px;
+      border-radius: 5px;
+      max-height: 300px;
+      overflow-y: auto;
+    }
+    strong {
+      background-color: yellow;
+    }
+    .counter {
+      margin-top: 10px;
+      font-weight: bold;
+      color: #333;
+    }
+    input[type="text"] {
+      width: calc(100% - 16px);
+      padding: 8px;
+      margin-bottom: 10px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    button {
+      width: 100%;
+      padding: 10px;
+      background-color: #4CAF50;
+      border: none;
+      color: white;
+      font-size: 16px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #45a049;
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <button class="toggle-btn" onclick="toggleDarkMode()">Toggle Dark Mode</button>
-        <select class="lang-select" onchange="changeLanguage(this.value)">
-            <option value="en">English</option>
-            <option value="kk">Қазақша</option>
-            <option value="ru">Русский</option>
-        </select>
-        <h1 id="name">Daulet Yermekbay</h1>
-        <h2 id="title">High-School Student</h2>
-        <h3>Contact</h3>
-        <p id="contact">+7-776-019-78-02 | mi.dauermekbai@gmail.com | Astana, Kazakhstan</p>
-        <h3>Education</h3>
-        <p id="education">BILIM INNOVATION LYCEUM, Astana (2021 - present)</p>
-        <h3>Skills</h3>
-        <ul id="skills">
-            <li>Problem-Solving</li>
-            <li>Project Management Tools</li>
-            <li>Strong Communication</li>
-        </ul>
-        <h3>Languages</h3>
-        <p id="languages">Kazakh (Native), Russian (Native), English (Upper-Intermediate)</p>
-    </div>
-    
-    <script>
-        function toggleDarkMode() {
-            document.body.classList.toggle('dark-mode');
-        }
 
-        const translations = {
-            "kk": {
-                "name": "Ермекбай Даулет",
-                "title": "Мектеп оқушысы",
-                "contact": "+7-776-019-78-02 | mi.dauermekbai@gmail.com | Астана, Қазақстан",
-                "education": "БИЛ, Астана (2021 - қазіргі уақытқа дейін)",
-                "skills": ["Мәселелерді шешу", "Жобаларды басқару құралдары", "Күшті қарым-қатынас"],
-                "languages": "Қазақша (Ана тілі), Орысша (Ана тілі), Ағылшын (Ортадан жоғары)"
-            },
-            "ru": {
-                "name": "Ермекбай Даулет",
-                "title": "Школьник",
-                "contact": "+7-776-019-78-02 | mi.dauermekbai@gmail.com | Астана, Казахстан",
-                "education": "БИЛ, Астана (2021 - настоящее время)",
-                "skills": ["Решение проблем", "Инструменты управления проектами", "Сильная коммуникация"],
-                "languages": "Казахский (Родной), Русский (Родной), Английский (Выше среднего)"
-            },
-            "en": {
-                "name": "Daulet Yermekbay",
-                "title": "High-School Student",
-                "contact": "+7-776-019-78-02 | mi.dauermekbai@gmail.com | Astana, Kazakhstan",
-                "education": "BILIM INNOVATION LYCEUM, Astana (2021 - present)",
-                "skills": ["Problem-Solving", "Project Management Tools", "Strong Communication"],
-                "languages": "Kazakh (Native), Russian (Native), English (Upper-Intermediate)"
-            }
-        };
+  <div class="container">
+    <h2>Highlight Letter or Word</h2>
+    <input type="file" id="fileInput"><br><br>
+    <input type="text" id="wordInput" placeholder="Enter a letter or word to highlight">
+    <button onclick="processFile()">Highlight</button>
+    <div id="output"></div>
+    <div class="counter" id="counter"></div>
+  </div>
 
-        function changeLanguage(lang) {
-            document.getElementById('name').innerText = translations[lang].name;
-            document.getElementById('title').innerText = translations[lang].title;
-            document.getElementById('contact').innerText = translations[lang].contact;
-            document.getElementById('education').innerText = translations[lang].education;
-            document.getElementById('languages').innerText = translations[lang].languages;
-            
-            let skillsList = document.getElementById('skills');
-            skillsList.innerHTML = '';
-            translations[lang].skills.forEach(skill => {
-                let li = document.createElement('li');
-                li.innerText = skill;
-                skillsList.appendChild(li);
-            });
-        }
-    </script>
+  <script>
+    function escapeRegExp(string) {
+      return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    }
+
+    function processFile() {
+      const fileInput = document.getElementById('fileInput');
+      const word = document.getElementById('wordInput').value;
+      const output = document.getElementById('output');
+      const counter = document.getElementById('counter');
+
+      if (!fileInput.files[0]) {
+        alert("Please upload a file first.");
+        return;
+      }
+
+      if (!word) {
+        alert("Please enter a letter or word to highlight.");
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        let text = e.target.result;
+        const escapedWord = escapeRegExp(word);
+        const regex = new RegExp(escapedWord, 'gi');
+        
+        // Подсветка и счетчик
+        const matches = [...text.matchAll(regex)];
+        const highlighted = text.replace(regex, '<strong>$&</strong>');
+        output.innerHTML = highlighted;
+
+        // Показать количество совпадений
+        counter.textContent = matches.length > 0 
+          ? `Found ${matches.length} matches`
+          : "No matches found.";
+      };
+      reader.readAsText(fileInput.files[0]);
+    }
+  </script>
+
 </body>
 </html>
-
