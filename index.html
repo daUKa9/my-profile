@@ -3,73 +3,32 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Word Highlighter</title>
+  <title>Letter or Word Highlighter</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      background-color: #f2f2f2;
-      margin: 0;
-    }
-    .container {
-      background-color: #ffffff;
-      border-radius: 8px;
       padding: 20px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-      width: 500px;
     }
     #output {
       margin-top: 20px;
       white-space: pre-wrap;
-      background-color: #f9f9f9;
+      background-color: #FFFFFF;
       padding: 10px;
       border-radius: 5px;
-      max-height: 300px;
-      overflow-y: auto;
     }
     strong {
-      background-color: yellow;
-    }
-    .counter {
-      margin-top: 10px;
-      font-weight: bold;
-      color: #333;
-    }
-    input[type="text"] {
-      width: calc(100% - 16px);
-      padding: 8px;
-      margin-bottom: 10px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-    }
-    button {
-      width: 100%;
-      padding: 10px;
-      background-color: #4CAF50;
-      border: none;
-      color: white;
-      font-size: 16px;
-      border-radius: 4px;
-      cursor: pointer;
-    }
-    button:hover {
-      background-color: #45a049;
+      background-color: white;
     }
   </style>
 </head>
 <body>
+  <h2>Highlight Letter or Word in Uploaded File</h2>
+  <input type="file" id="fileInput"><br><br>
+  <label for="wordInput">Letter or word to highlight:</label>
+  <input type="text" id="wordInput">
+  <button onclick="processFile()">Highlight</button>
 
-  <div class="container">
-    <h2>Highlight Letter or Word</h2>
-    <input type="file" id="fileInput"><br><br>
-    <input type="text" id="wordInput" placeholder="Enter a letter or word to highlight">
-    <button onclick="processFile()">Highlight</button>
-    <div id="output"></div>
-    <div class="counter" id="counter"></div>
-  </div>
+  <div id="output"></div>
 
   <script>
     function escapeRegExp(string) {
@@ -80,7 +39,6 @@
       const fileInput = document.getElementById('fileInput');
       const word = document.getElementById('wordInput').value;
       const output = document.getElementById('output');
-      const counter = document.getElementById('counter');
 
       if (!fileInput.files[0]) {
         alert("Please upload a file first.");
@@ -96,17 +54,9 @@
       reader.onload = function(e) {
         let text = e.target.result;
         const escapedWord = escapeRegExp(word);
-        const regex = new RegExp(escapedWord, 'gi');
-        
-        // Подсветка и счетчик
-        const matches = [...text.matchAll(regex)];
+        const regex = new RegExp(escapedWord, 'gi'); // Match any instance, case-insensitive
         const highlighted = text.replace(regex, '<strong>$&</strong>');
         output.innerHTML = highlighted;
-
-        // Показать количество совпадений
-        counter.textContent = matches.length > 0 
-          ? `Found ${matches.length} matches`
-          : "No matches found.";
       };
       reader.readAsText(fileInput.files[0]);
     }
